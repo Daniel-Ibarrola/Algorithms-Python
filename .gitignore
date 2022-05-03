@@ -1,0 +1,8 @@
+*.pdf
+build/
+.idea/
+.vscode/
+tests/
+trees/
+brackets_tests/
+__pycache__/

@@ -77,3 +77,13 @@ def test_substring():
     pattern = "dog"
     positions = search_substring(text, pattern)
     assert positions == [3]
+
+    text = "Hello book duck table duck cellphone duck"
+    pattern = "duck"
+    positions = search_substring(text, pattern)
+    assert len(positions) == 3
+    assert text[positions[0]:positions[0] + len(pattern)] == "duck"
+    assert text[positions[1]:positions[1] + len(pattern)] == "duck"
+    assert text[positions[2]:positions[2] + len(pattern)] == "duck"
+
+

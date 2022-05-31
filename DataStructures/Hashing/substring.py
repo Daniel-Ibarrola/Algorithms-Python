@@ -28,6 +28,7 @@ def precompute_hashes(text: str, pattern_size: int,
     for ii in range(text_size - pattern_size - 1, -1, -1):
         hashes[ii] = (multiplier * hashes[ii + 1] + ord(text[ii]) -
                       y * ord(text[ii + pattern_size])) % prime
+
     return hashes
 
 

@@ -49,3 +49,27 @@ class Graph:
         self._validate_node(node_2)
 
         return self._adj_matrix[node_1][node_2]
+
+    def get_neighbors(self, node: int) -> list[int]:
+        """ Returns the neighbors of a given node"""
+        self._validate_node(node)
+
+        neighbors = []
+        for ii, is_neighbor in enumerate(self._adj_matrix[node]):
+            if is_neighbor:
+                neighbors.append(ii)
+
+        return neighbors
+
+    def num_neighbors(self, node: int) -> int:
+        """ Returns the number of neighbors of the given node"""
+        self._validate_node(node)
+
+        neighbor_count = 0
+        for is_neighbor in self._adj_matrix[node]:
+            if is_neighbor:
+                neighbor_count += 1
+        return neighbor_count
+
+    def __repr__(self) -> str:
+        return f"Graph(num_nodes={self.num_nodes}, num_edges={self.num_edges})"

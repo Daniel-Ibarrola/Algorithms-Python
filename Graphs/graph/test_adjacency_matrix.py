@@ -58,7 +58,37 @@ def test_is_neighbor():
 
 
 def test_get_neighbors():
-    pass
+
+    # Graph with no edges
+    g = Graph(3)
+    assert g.get_neighbors(1) == []
+
+    k3 = Graph(3)
+    k3.add_edge(0, 1)
+    k3.add_edge(0, 2)
+    k3.add_edge(1, 2)
+    assert k3.get_neighbors(0) == [1, 2]
+
+
+def test_num_neighbors():
+    # Graph with no edges
+    g = Graph(3)
+    assert g.num_neighbors(2) == 0
+
+    k3 = Graph(3)
+    k3.add_edge(0, 1)
+    k3.add_edge(0, 2)
+    k3.add_edge(1, 2)
+    assert k3.num_neighbors(0) == 2
+
+
+def test_representation():
+    g = Graph(5)
+    assert str(g) == "Graph(num_nodes=5, num_edges=0)"
+
+    g.add_edge(1, 2)
+    g.add_edge(0, 3)
+    assert str(g) == "Graph(num_nodes=5, num_edges=2)"
 
 
 def test_invalid_node_raises_error():

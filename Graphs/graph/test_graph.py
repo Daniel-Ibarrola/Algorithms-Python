@@ -239,3 +239,45 @@ def test_distances_from_node_and_shortest_path():
     assert graph_3.shortest_path(6, 1) == 1
     assert graph_3.shortest_path(6, 2) == 2
     assert graph_3.shortest_path(0, 6) == 2
+
+
+def test_is_graph_bipartite():
+
+    empty_graph = Graph()
+    assert empty_graph.is_bipartite()
+
+    no_edges_graph = Graph(4)
+    assert no_edges_graph.is_bipartite()
+
+    graph_1 = Graph(4)
+    graph_1.add_edges([
+        (0, 1), (0, 2), (0, 3), (1, 2),
+    ])
+    assert not graph_1.is_bipartite()
+
+    graph_2 = Graph(5)
+    graph_2.add_edges([
+        (0, 3), (1, 3), (1, 4), (2, 3),
+    ])
+    assert graph_2.is_bipartite()
+
+    graph_3 = Graph(5)
+    graph_3.add_edges([
+        (0, 1), (1, 2), (1, 3), (2, 4), (3, 4)
+    ])
+    assert graph_3.is_bipartite()
+
+    multi_component_graph_1 = Graph(7)
+    multi_component_graph_1.add_edges([
+        (0, 1), (1, 2), (2, 3),
+        (4, 5), (4, 6), (5, 6),
+    ])
+    assert not multi_component_graph_1.is_bipartite()
+
+    multi_component_graph_2 = Graph(8)
+    multi_component_graph_2.add_edges([
+        (0, 1), (1, 2), (2, 3),
+        (4, 5), (5, 6), (6, 7),
+        (7, 4),
+    ])
+    assert multi_component_graph_2.is_bipartite()

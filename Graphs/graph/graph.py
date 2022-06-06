@@ -1,8 +1,16 @@
 from collections import deque
+from enum import Enum
 
 
 class InvalidNodeError(ValueError):
     pass
+
+
+class Colors(Enum):
+    # Colors for the is bipartite function
+    white = -1  # Represents a node that has not been visited
+    red = 0
+    green = 1
 
 
 class Graph:
@@ -150,6 +158,36 @@ class Graph:
         if distance == float("inf"):
             return -1
         return distance
+
+    def _is_bipartite_util(self, current_node: int,
+                           colors: list[Colors]) -> bool:
+        """ Check if a graph is bipartite by coloring the
+            graph by two different colors such that any two
+            adjacent nodes have different colors.
+        """
+        colors[current_node] = Colors.green
+        queue = deque()
+        queue.appendleft(current_node)
+
+        while len(queue) > 0:
+            current_node = queue.pop()
+            for neighbor in self.adjacency_list[current_node]:
+                if colors[current_node] == colors[neighbor]:
+                    return False
+                if colors[neighbor] == Colors.white:
+                    colors[neighbor] = Colors(1 - colors[current_node].value)
+                    queue.appendleft(neighbor)
+
+        return True
+
+    def is_bipartite(self) -> bool:
+        """ Returns true if the graph is bipartite. """
+        colors = [Colors.white] * self._num_nodes
+        for node in range(self._num_nodes):
+            if colors[node] == Colors.white \
+                    and not self._is_bipartite_util(node, colors):
+                return False
+        return True
 
     def __len__(self):
         return self._num_nodes

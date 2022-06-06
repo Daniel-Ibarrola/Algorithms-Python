@@ -174,3 +174,6 @@ def test_number_of_connected_components(c4_graph,
 
     assert graph_with_three_connected_components.num_connected_components() == 3
 
+
+def test_graph_repr(c4_graph):
+    assert str(c4_graph) == "Graph(num_nodes=4, num_edges=4)"

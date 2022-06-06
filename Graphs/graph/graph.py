@@ -107,3 +107,9 @@ class Graph:
                 connected_components += 1
 
         return connected_components
+
+    def __len__(self):
+        return self._num_nodes
+
+    def __repr__(self):
+        return f"Graph(num_nodes={self._num_nodes}, num_edges={self._num_edges})"

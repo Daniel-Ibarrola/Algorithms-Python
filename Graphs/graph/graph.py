@@ -1,3 +1,4 @@
+from collections import deque
 
 
 class InvalidNodeError(ValueError):
@@ -37,6 +38,18 @@ class Graph:
             self._adjacency_list[node_1].append(node_2)
             self._adjacency_list[node_2].append(node_1)
             self._num_edges += 1
+
+    def add_edges(self, edge_list: list[tuple[int, int]]) -> None:
+        """ Add multiple edges to the graph"""
+        for edge in edge_list:
+            self.add_edge(edge[0], edge[1])
+
+    def add_edges_to_node(self, node: int, node_list: list[int]) -> None:
+        """ Adds edges from the given node to the nodes in
+            the given list
+        """
+        for node_2 in node_list:
+            self.add_edge(node, node_2)
 
     def add_node(self) -> None:
         """ Adds a node to the graph. """
@@ -107,6 +120,36 @@ class Graph:
                 connected_components += 1
 
         return connected_components
+
+    def distances_from_node(self, node: int) -> list[float]:
+        """ Return the distances from the given node to all other
+            nodes in the graph.
+        """
+        self._validate_node(node)
+
+        # We use a BFS approach to find the distances to all nodes
+        distances = [float("inf")] * self._num_nodes
+        distances[node] = 0
+        queue = deque()
+        queue.appendleft(node)
+
+        while len(queue) > 0:
+            current_node = queue.pop()
+            for neighbor in self.adjacency_list[current_node]:
+                # If the distance is infinity it means that the node has not been
+                # visited
+                if distances[neighbor] == float("inf"):
+                    distances[neighbor] = distances[current_node] + 1
+                    queue.appendleft(neighbor)
+
+        return distances
+
+    def shortest_path(self, start_node: int, end_node: int) -> float:
+        """ Returns the shortest path from start node to end node. """
+        distance = self.distances_from_node(start_node)[end_node]
+        if distance == float("inf"):
+            return -1
+        return distance
 
     def __len__(self):
         return self._num_nodes

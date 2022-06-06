@@ -88,6 +88,28 @@ def test_add_nodes_and_edges():
     assert g.is_neighbor(0, 1)
 
 
+def test_add_edges_from_list():
+    graph = Graph(4)
+    graph.add_edges([
+        (0, 1), (1, 2), (2, 3), (3, 0)
+    ])
+    assert graph.num_edges == 4
+    assert graph.is_neighbor(0, 1)
+    assert graph.is_neighbor(1, 2)
+    assert graph.is_neighbor(2, 3)
+    assert graph.is_neighbor(3, 0)
+
+
+def test_add_edges_to_node():
+    graph = Graph(6)
+    graph.add_edges_to_node(0, [1, 2, 3, 4])
+    assert graph.num_edges == 4
+    assert graph.is_neighbor(0, 1)
+    assert graph.is_neighbor(0, 2)
+    assert graph.is_neighbor(0, 3)
+    assert graph.is_neighbor(0, 4)
+
+
 def test_get_neighbors():
     g = Graph(5)
     g.add_edge(0, 1)
@@ -177,3 +199,43 @@ def test_number_of_connected_components(c4_graph,
 
 def test_graph_repr(c4_graph):
     assert str(c4_graph) == "Graph(num_nodes=4, num_edges=4)"
+
+
+def test_distances_from_node_and_shortest_path():
+    graph_1 = Graph(4)
+    graph_1.add_edges([
+        (0, 1), (0, 2), (0, 3), (1, 2),
+    ])
+    assert graph_1.distances_from_node(1) == [1, 0, 1, 2]
+    assert graph_1.shortest_path(1, 0) == 1
+    assert graph_1.shortest_path(1, 2) == 1
+    assert graph_1.shortest_path(1, 3) == 2
+
+    graph_2 = Graph(5)
+    graph_2.add_edges([
+        (0, 2), (0, 3), (1, 4), (2, 3)
+    ])
+    assert graph_2.distances_from_node(0) == [0, float("inf"),
+                                              1, 1, float("inf")]
+    assert graph_2.shortest_path(0, 2) == 1
+    assert graph_2.shortest_path(0, 3) == 1
+    assert graph_2.shortest_path(0, 4) == -1
+    assert graph_2.shortest_path(4, 1) == 1
+    assert graph_2.shortest_path(4, 2) == -1
+
+    graph_3 = Graph(9)
+    graph_3.add_edges_to_node(0, [1, 2, 4, 5])
+    graph_3.add_edges_to_node(1, [0, 2, 5, 6, 7])
+    graph_3.add_edges_to_node(2, [0, 1, 3, 7])
+    graph_3.add_edges_to_node(3, [2, 4, 7, 8])
+    graph_3.add_edges_to_node(4, [0, 3, 5, 8])
+    graph_3.add_edges_to_node(5, [0, 1, 4, 6, 8])
+    graph_3.add_edges_to_node(6, [1, 5, 7, 8])
+    graph_3.add_edges_to_node(7, [1, 2, 3, 6, 8])
+    graph_3.add_edges_to_node(8, [3, 4, 5, 6, 7])
+    assert graph_3.distances_from_node(6) == [
+        2, 1, 2, 2, 2, 1, 0, 1, 1
+    ]
+    assert graph_3.shortest_path(6, 1) == 1
+    assert graph_3.shortest_path(6, 2) == 2
+    assert graph_3.shortest_path(0, 6) == 2

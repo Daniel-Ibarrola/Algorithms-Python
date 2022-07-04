@@ -1,21 +1,6 @@
 import numpy as np
 
 
-def sorted_positions_dict(string: str) -> dict[int, int]:
-    """ Returns a dictionary with the indexes of the original string
-        as keys, and the indexes of the sorted string as value.
-
-        Example:
-        -------
-            >>> sorted_positions_dict("badc")
-            >>> {0: 1, 1: 0, 2 : 3, 3: 2}
-    """
-    sorted_indices = sorted(range(len(string)), key=lambda k: string[k])
-    return {
-        ii: jj for ii, jj in enumerate(sorted_indices)
-    }
-
-
 def sorted_positions_array(string: str) -> np.ndarray:
     """ Returns an array with the indices that each character
         would have in the sorted string

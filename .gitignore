@@ -6,3 +6,7 @@ tests/
 trees/
 brackets_tests/
 __pycache__/
+
+# Minisat files
+*.cnt
+*.sat

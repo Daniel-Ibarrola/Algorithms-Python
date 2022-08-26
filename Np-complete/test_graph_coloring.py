@@ -1,71 +1,71 @@
+from graph_coloring import Graph
 from to_minisat import to_minisat
 
 
-def two_color_graph_with_two_edges_cnf():
-    # Graph with three vertices
-    formula = [
-        [1, 2, 0],
-        [-1, -2, 0],
-        [3, 4, 0],
-        [-3, -4, 0],
-        [5, 6, 0],
-        [-5, -6, 0],
-        [1, 3, 0],
-        [2, 4, 0],
-        [1, 5, 0],
-        [2, 6, 0],
+def three_coloring_c3_cnf():
+    """ Returns the expression in CNF for the C3 graph. """
+    expression = [
+        # At least one color
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9],
+        # At most one color
+        [-1, -2],
+        [-1, -3],
+        [-2, -3],
+        [-4, -5],
+        [-4, -6],
+        [-5, -6],
+        [-7, -8],
+        [-7, -9],
+        [-8, -9],
+        # Different colors
+        [-1, -4],
+        [-2, -5],
+        [-3, -6],
+        [-1, -7],
+        [-2, -8],
+        [-3, -9],
+        [-4, -7],
+        [-5, -8],
+        [-6, -9],
     ]
-    return formula
-
-
-def test_two_colors_cnf_satisfied():
-
-    # Graph with two vertices
-    n_variables = 4
-    formula = [
-        [1, 2, 0],
-        [-1, -2, 0],
-        [3, 4, 0],
-        [-3, -4, 0],
-        [1, 3, 0],
-        [2, 4, 0]
-    ]
-    result = to_minisat(formula, n_variables)
-
-    assert "SAT" in result
-
-    n_variables = 6
-    formula = two_color_graph_with_two_edges_cnf()
-    result = to_minisat(formula, n_variables)
-
-    assert "SAT" in result
-
-
-def test_two_colors_cnf_not_satisfied():
-
-    # Graph with three vertices (C3). Cannot be colored by just two colors
-    n_variables = 3
-    formula = two_color_graph_with_two_edges_cnf()
-    formula.append([3, 5, 0])
-    formula.append([4, 6, 0])
-    result = to_minisat(formula, n_variables)
-
-    assert "SAT" in result
+    for clause in expression:
+        clause.append(0)
+    return expression
 
 
 def test_three_colors_cnf_satisfied():
-
     n_variables = 9
-    formula = [
-        [1, 2, 3, 0]
-    ]
+    expression = three_coloring_c3_cnf()
+    result = to_minisat(expression, n_variables)
     assert "SAT" in result
 
 
-def test_three_colors_cnf_not_satisfied():
-    pass
-
-
 def test_graph_to_cnf_formula():
-    pass
+    edge_list = [
+        (1, 2),
+        (1, 3),
+        (2, 3),
+    ]
+    n_nodes = 3
+    graph = Graph(n_nodes, edge_list)
+    expression = graph.three_color_cnf_expression()
+    expected_expression = three_coloring_c3_cnf()
+    assert expression == expected_expression
 
+
+def test_three_colors_cnf_not_satisfied():
+    # This edge list represent C4 graph. It cannot be three colored.
+    edge_list = [
+        (1, 2),
+        (1, 3),
+        (1, 4),
+        (2, 3),
+        (2, 4),
+        (3, 4),
+    ]
+    n_nodes = 4
+    graph = Graph(n_nodes, edge_list)
+    result = graph.to_minisat()
+    assert "UNSAT" in result

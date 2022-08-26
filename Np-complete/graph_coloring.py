@@ -1,3 +1,4 @@
+from to_minisat import to_minisat
 
 
 class Graph:
@@ -44,11 +45,14 @@ class Graph:
             clauses.append([-(literal_1 + 1), -(literal_2 + 1), 0])
             clauses.append([-(literal_1 + 2), -(literal_2 + 2), 0])
 
-        assert len(clauses) == 4 * self.num_edges + 3 * self.num_edges
+        assert len(clauses) == 4 * self.num_nodes + 3 * self.num_edges, \
+            f"There are {len(clauses)} clauses"
         return clauses
 
     def to_minisat(self) -> str:
         """ Returns the result of passing the tree color CNF expression
             to the minisat program
         """
-        pass
+        expression = self.three_color_cnf_expression()
+        num_literals = 3 * self.num_nodes
+        return to_minisat(expression, num_literals)

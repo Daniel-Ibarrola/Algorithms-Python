@@ -56,7 +56,7 @@ def test_graph_to_cnf_formula():
 
 
 def test_three_colors_cnf_not_satisfied():
-    # This edge list represent C4 graph. It cannot be three colored.
+    # This edge list represent C4 graph. It cannot be colored by tree different colors.
     edge_list = [
         (1, 2),
         (1, 3),

@@ -2,14 +2,7 @@ from to_minisat import to_minisat, write_minisat_file
 import os
 
 
-def test_write_minisat_file():
-    n_variables = 2
-    formula = [
-        [1, 2, 0],
-        [1, -2, 0],
-        [-1, -2, 0]
-    ]
-    write_minisat_file(formula, n_variables, "temp.cnt")
+def assert_minisat_file_is_correct():
     with open("temp.cnt") as fp:
         lines = []
         for line in fp.readlines():
@@ -22,6 +15,29 @@ def test_write_minisat_file():
     assert lines[1].strip() == "1 2 0"
     assert lines[2].strip() == "1 -2 0"
     assert lines[3].strip() == "-1 -2 0"
+
+
+def test_write_minisat_file():
+    n_variables = 2
+    formula = [
+        [1, 2, 0],
+        [1, -2, 0],
+        [-1, -2, 0]
+    ]
+    write_minisat_file(formula, n_variables, "temp.cnt")
+    assert_minisat_file_is_correct()
+
+
+def test_write_minisat_file_add_zeros():
+    n_variables = 2
+    formula = [
+        [1, 2],
+        [1, -2],
+        [-1, -2]
+    ]
+    write_minisat_file(formula, n_variables,
+                       "temp.cnt", add_zeros=True)
+    assert_minisat_file_is_correct()
 
 
 def test_to_minisat_satisfiable_formula():

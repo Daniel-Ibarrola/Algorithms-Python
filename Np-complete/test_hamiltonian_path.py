@@ -40,6 +40,8 @@ def hamiltonian_path_expression():
     constrain_5 = [
         [-1, -8],
         [-2, -9],
+        [-7, -2],
+        [-8, -3],
     ]
     expression = (
         constrain_1, constrain_2, constrain_3, constrain_4, constrain_5
@@ -124,28 +126,20 @@ def test_graph_adjacency_matrix(graph_with_hamiltonian_path,
                                 graph_with_no_hamiltonian_path):
     num_nodes, edge_list = graph_with_hamiltonian_path
     adjacency_matrix = hp.Graph.build_matrix(num_nodes, edge_list)
-    expected_matrix = [[True, False], [True]]
+    expected_matrix = [[False, True, False],
+                       [True, False, True],
+                       [False, True, False]]
     assert adjacency_matrix == expected_matrix
 
     num_nodes, edge_list = graph_with_no_hamiltonian_path
     adjacency_matrix = hp.Graph.build_matrix(num_nodes, edge_list)
     expected_matrix = [
-        [True, True, True],
-        [False, False],
-        [False]
+        [False, True, True, True],
+        [True, False, False, False],
+        [True, False, False, False],
+        [True, False, False, False],
     ]
     assert adjacency_matrix == expected_matrix
-
-
-def test_create_clauses():
-    clauses = []
-    expected_clauses = [
-        [-5, -10],
-        [-6, -11],
-        [-7, -12],
-    ]
-    hp.Graph._create_clauses(2, 3, 4, clauses)
-    assert clauses == expected_clauses
 
 
 def test_connectivity_cnf(graph_with_hamiltonian_path,
@@ -155,6 +149,8 @@ def test_connectivity_cnf(graph_with_hamiltonian_path,
     expected_expression = [
         [-1, -8],
         [-2, -9],
+        [-7, -2],
+        [-8, -3],
     ]
     expression = []
     graph.connectivity_cnf(expression)
@@ -169,9 +165,18 @@ def test_connectivity_cnf(graph_with_hamiltonian_path,
         [-5, -14],
         [-6, -15],
         [-7, -16],
+        [-9, -6],
+        [-10, -7],
+        [-11, -8],
         [-9, -14],
         [-10, -15],
-        [-11, -16]
+        [-11, -16],
+        [-13, -6],
+        [-14, -7],
+        [-15, -8],
+        [-13, -10],
+        [-14, -11],
+        [-15, -12],
     ]
     expression = []
     graph.connectivity_cnf(expression)

@@ -82,7 +82,7 @@ def different_positions(num_nodes: int, expression: list) -> None:
 
 
 class Graph:
-    """ Undirected graph represented by a sparse adjacency matrix.
+    """ Undirected graph represented by an adjacency matrix.
     """
 
     def __init__(self, num_nodes: int, edge_list: list[tuple[int, int]]):
@@ -90,37 +90,26 @@ class Graph:
 
     @property
     def num_nodes(self):
-        return len(self._adjacency_matrix) + 1
+        return len(self._adjacency_matrix)
 
     @staticmethod
     def build_matrix(num_nodes: int, edge_list: list[tuple[int, int]]) -> list[list[int]]:
         """ Builds the adjacency matrix for the graph.
         """
-        matrix = [[False] * (num_nodes - ii) for ii in range(1, num_nodes)]
+        matrix = [[False] * num_nodes for ii in range(0, num_nodes)]
         for edge in edge_list:
-            if edge[0] < edge[1]:
-                matrix[edge[0] - 1][edge[1] - edge[0] - 1] = True
-            elif edge[1] > edge[0]:
-                matrix[edge[1] - 1][edge[0] - edge[1] - 1] = True
+            matrix[edge[0] - 1][edge[1] - 1] = True
+            matrix[edge[1] - 1][edge[0] - 1] = True
 
         return matrix
-
-    @staticmethod
-    def _create_clauses(node_1: int, node_2: int, num_nodes: int, clauses: list) -> None:
-        """ Creates the clauses for the connectivity_cnf method.
-        """
-        literal_1 = -(num_nodes * (node_1 - 1) + 1)
-        literal_2 = -(num_nodes * (node_2 - 1) + 2)
-        for ii in range(0, num_nodes - 1):
-            clauses.append([literal_1, literal_2])
-            literal_1 -= 1
-            literal_2 -= 1
 
     def connectivity_cnf(self, expression: list) -> None:
         """ Returns a CNF formula for the nodes that are not connected. """
         num_nodes = self.num_nodes
-        for ii in range(len(self._adjacency_matrix)):
-            for jj in range(len(self._adjacency_matrix[ii])):
-                if not self._adjacency_matrix[ii][jj]:
-                    self._create_clauses(ii + 1, jj + ii + 2,
-                                         num_nodes, expression)
+        for ii in range(num_nodes):
+            for jj in range(num_nodes):
+                if ii != jj and not self._adjacency_matrix[ii][jj]:
+                    for kk in range(num_nodes - 1):
+                        lit_1 = -(1 + num_nodes*ii + kk)
+                        lit_2 = -(2 + num_nodes*jj + kk)
+                        expression.append([lit_1, lit_2])
